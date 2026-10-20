@@ -25,14 +25,59 @@ Node *create_node(const char *name, int priority)
     return node;
 }
 
+void insert_by_priority(Node **head, const char *name, int priority)
+{
+    Node *node = create_node(name, priority);
+
+    if (*head == NULL || priority > (*head)->priority) {
+        node->next = *head;
+        *head = node;
+        return;
+    }
+
+    Node *current = *head;
+
+    while (current->next != NULL &&
+           current->next->priority >= priority) {
+        current = current->next;
+    }
+
+    node->next = current->next;
+    current->next = node;
+}
+
+void print_queue(const Node *head)
+{
+    const Node *current = head;
+
+    while (current != NULL) {
+        printf("%s (priority %d)\n",
+               current->name, current->priority);
+        current = current->next;
+    }
+}
+
+void clear_queue(Node **head)
+{
+    while (*head != NULL) {
+        Node *next = (*head)->next;
+        free(*head);
+        *head = next;
+    }
+}
+
 int main(void)
 {
-    Node *head = create_node("Document A", 2);
+    Node *head = NULL;
 
-    printf("Created: %s, priority: %d\n",
-           head->name, head->priority);
+    insert_by_priority(&head, "Document A", 2);
+    insert_by_priority(&head, "Document B", 5);
+    insert_by_priority(&head, "Document C", 3);
 
-    free(head);
+    printf("Priority queue:\n");
+    print_queue(head);
+
+    clear_queue(&head);
 
     return 0;
 }
