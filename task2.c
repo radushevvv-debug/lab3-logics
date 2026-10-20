@@ -40,9 +40,31 @@ void enqueue(Queue *queue, const char *name)
     queue->rear = node;
 }
 
+Node *dequeue(Queue *queue)
+{
+    if (queue->front == NULL) {
+        return NULL;
+    }
+
+    Node *removed = queue->front;
+    queue->front = removed->next;
+
+    if (queue->front == NULL) {
+        queue->rear = NULL;
+    }
+
+    removed->next = NULL;
+    return removed;
+}
+
 void print_queue(const Queue *queue)
 {
     const Node *current = queue->front;
+
+    if (current == NULL) {
+        printf("Queue is empty\n");
+        return;
+    }
 
     while (current != NULL) {
         printf("%s\n", current->name);
@@ -70,7 +92,17 @@ int main(void)
     enqueue(&queue, "Document B");
     enqueue(&queue, "Document C");
 
-    printf("Queue from front to rear:\n");
+    printf("Queue before extraction:\n");
+    print_queue(&queue);
+
+    Node *removed = dequeue(&queue);
+
+    if (removed != NULL) {
+        printf("\nExtracted: %s\n", removed->name);
+        free(removed);
+    }
+
+    printf("\nQueue after extraction:\n");
     print_queue(&queue);
 
     clear_queue(&queue);
