@@ -31,9 +31,27 @@ void push(Stack *stack, const char *name)
     stack->top = node;
 }
 
+Node *pop(Stack *stack)
+{
+    if (stack->top == NULL) {
+        return NULL;
+    }
+
+    Node *removed = stack->top;
+    stack->top = removed->next;
+    removed->next = NULL;
+
+    return removed;
+}
+
 void print_stack(const Stack *stack)
 {
     const Node *current = stack->top;
+
+    if (current == NULL) {
+        printf("Stack is empty\n");
+        return;
+    }
 
     while (current != NULL) {
         printf("%s\n", current->name);
@@ -59,7 +77,17 @@ int main(void)
     push(&stack, "Document B");
     push(&stack, "Document C");
 
-    printf("Stack from top to bottom:\n");
+    printf("Stack before extraction:\n");
+    print_stack(&stack);
+
+    Node *removed = pop(&stack);
+
+    if (removed != NULL) {
+        printf("\nExtracted: %s\n", removed->name);
+        free(removed);
+    }
+
+    printf("\nStack after extraction:\n");
     print_stack(&stack);
 
     clear_stack(&stack);
