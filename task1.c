@@ -46,9 +46,27 @@ void insert_by_priority(Node **head, const char *name, int priority)
     current->next = node;
 }
 
+Node *extract_highest(Node **head)
+{
+    if (*head == NULL) {
+        return NULL;
+    }
+
+    Node *removed = *head;
+    *head = removed->next;
+    removed->next = NULL;
+
+    return removed;
+}
+
 void print_queue(const Node *head)
 {
     const Node *current = head;
+
+    if (current == NULL) {
+        printf("Queue is empty\n");
+        return;
+    }
 
     while (current != NULL) {
         printf("%s (priority %d)\n",
@@ -74,7 +92,18 @@ int main(void)
     insert_by_priority(&head, "Document B", 5);
     insert_by_priority(&head, "Document C", 3);
 
-    printf("Priority queue:\n");
+    printf("Queue before extraction:\n");
+    print_queue(head);
+
+    Node *removed = extract_highest(&head);
+
+    if (removed != NULL) {
+        printf("\nExtracted: %s (priority %d)\n",
+               removed->name, removed->priority);
+        free(removed);
+    }
+
+    printf("\nQueue after extraction:\n");
     print_queue(head);
 
     clear_queue(&head);
